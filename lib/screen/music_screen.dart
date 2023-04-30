@@ -2,11 +2,28 @@ import 'dart:ui';
 
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:musicplayer/controllers/page_manager.dart';
 
 // ignore: must_be_immutable
-class MusicScreen extends StatelessWidget {
-  MusicScreen({super.key});
+class MusicScreen extends StatefulWidget {
+  const MusicScreen({super.key});
+
+  @override
+  State<MusicScreen> createState() => _MusicScreenState();
+}
+
+class _MusicScreenState extends State<MusicScreen> {
   late Size size;
+
+  late PageManager _pageManager;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _pageManager = PageManager();
+  }
+
   @override
   Widget build(BuildContext context) {
     size = MediaQuery.of(context).size;
@@ -101,14 +118,22 @@ class MusicScreen extends StatelessWidget {
                       const SizedBox(
                         height: 20,
                       ),
-                      const ProgressBar(
-                        progress: Duration(seconds: 30),
-                        total: Duration(seconds: 210),
-                        thumbColor: Colors.redAccent,
-                        baseBarColor: Colors.grey,
-                        progressBarColor: Colors.white,
-                        timeLabelTextStyle: TextStyle(color: Colors.white),
-                        thumbGlowColor: Color.fromARGB(55, 140, 98, 98),
+                      ValueListenableBuilder(
+                        valueListenable: _pageManager.progressBarNotifier,
+                        builder: (context, value, _) {
+                          return ProgressBar(
+                            progress: value.current,
+                            total: value.total,
+                            buffered: value.buffered,
+                            thumbColor: Colors.redAccent,
+                            baseBarColor: Colors.grey,
+                            progressBarColor: Colors.white,
+                            timeLabelTextStyle:
+                                const TextStyle(color: Colors.white),
+                            thumbGlowColor:
+                                const Color.fromARGB(55, 140, 98, 98),
+                          );
+                        },
                       ),
                       const SizedBox(
                         height: 20,
@@ -147,11 +172,32 @@ class MusicScreen extends StatelessWidget {
                                 end: Alignment.topLeft,
                               ),
                             ),
-                            child: const Icon(
-                              Icons.play_arrow,
-                              color: Colors.white,
-                              size: 35,
-                            ),
+                            child: ValueListenableBuilder(
+                                valueListenable: _pageManager.buttonNotifier,
+                                builder: (context, ButtonState value, _) {
+                                  switch (value) {
+                                    case ButtonState.loading:
+                                      return const CircularProgressIndicator();
+                                    case ButtonState.paused:
+                                      return IconButton(
+                                        onPressed: () {},
+                                        icon: const Icon(
+                                          Icons.play_arrow_rounded,
+                                          color: Colors.white,
+                                          size: 35,
+                                        ),
+                                      );
+                                    case ButtonState.playing:
+                                      return IconButton(
+                                        onPressed: () {},
+                                        icon: const Icon(
+                                          Icons.pause,
+                                          color: Colors.white,
+                                          size: 35,
+                                        ),
+                                      );
+                                  }
+                                }),
                           ),
                           IconButton(
                             onPressed: () {},
