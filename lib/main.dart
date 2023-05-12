@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
         fontFamily: 'Ubuntu',
       ),
       debugShowCheckedModeBanner: false,
-      home: MusicScreen(),
+      home: const MusicScreen(),
     );
   }
 }

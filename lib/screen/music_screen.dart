@@ -19,7 +19,6 @@ class _MusicScreenState extends State<MusicScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _pageManager = PageManager();
   }
@@ -97,6 +96,7 @@ class _MusicScreenState extends State<MusicScreen> {
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
+                              //لطفا منتظرباشید
                               Text(
                                 "Rayaham Kon",
                                 style: TextStyle(
@@ -125,9 +125,11 @@ class _MusicScreenState extends State<MusicScreen> {
                             progress: value.current,
                             total: value.total,
                             buffered: value.buffered,
-                            thumbColor: Colors.redAccent,
+                            onSeek: _pageManager.seek,
+                            thumbColor: Colors.white,
                             baseBarColor: Colors.grey,
-                            progressBarColor: Colors.white,
+                            progressBarColor: Colors.redAccent,
+                            bufferedBarColor: Colors.red.shade200,
                             timeLabelTextStyle:
                                 const TextStyle(color: Colors.white),
                             thumbGlowColor:
@@ -172,26 +174,31 @@ class _MusicScreenState extends State<MusicScreen> {
                                 end: Alignment.topLeft,
                               ),
                             ),
-                            child: ValueListenableBuilder(
+                            child: ValueListenableBuilder<ButtonState>(
                                 valueListenable: _pageManager.buttonNotifier,
                                 builder: (context, ButtonState value, _) {
                                   switch (value) {
                                     case ButtonState.loading:
-                                      return const CircularProgressIndicator();
-                                    case ButtonState.paused:
+                                      return const CircularProgressIndicator(
+                                        valueColor: AlwaysStoppedAnimation(
+                                            Colors.white),
+                                      );
+                                    case ButtonState.playing:
                                       return IconButton(
-                                        onPressed: () {},
+                                        padding: EdgeInsets.zero,
+                                        onPressed: _pageManager.pause,
                                         icon: const Icon(
-                                          Icons.play_arrow_rounded,
+                                          Icons.pause,
                                           color: Colors.white,
                                           size: 35,
                                         ),
                                       );
-                                    case ButtonState.playing:
+                                    case ButtonState.paused:
                                       return IconButton(
-                                        onPressed: () {},
+                                        padding: EdgeInsets.zero,
+                                        onPressed: _pageManager.play,
                                         icon: const Icon(
-                                          Icons.pause,
+                                          Icons.play_arrow_rounded,
                                           color: Colors.white,
                                           size: 35,
                                         ),
