@@ -3,10 +3,18 @@ import 'dart:ui';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:musicplayer/controllers/page_manager.dart';
+import 'package:just_audio/just_audio.dart';
 
 // ignore: must_be_immutable
 class MusicScreen extends StatefulWidget {
-  const MusicScreen({super.key});
+  const MusicScreen(
+    this._audioPlayer,
+    this._pageController, {
+    super.key,
+  });
+
+  final AudioPlayer _audioPlayer;
+  final PageController _pageController;
 
   @override
   State<MusicScreen> createState() => _MusicScreenState();
@@ -20,7 +28,7 @@ class _MusicScreenState extends State<MusicScreen> {
   @override
   void initState() {
     super.initState();
-    _pageManager = PageManager();
+    _pageManager = PageManager(widget._audioPlayer);
   }
 
   @override
@@ -32,9 +40,17 @@ class _MusicScreenState extends State<MusicScreen> {
           SizedBox(
             height: size.height,
             width: size.width,
-            child: Image.asset(
-              "assets/images/Mohsen-Chavoshi-Rahayam-Kon.jpeg",
-              fit: BoxFit.fill,
+            child: ValueListenableBuilder(
+              valueListenable: _pageManager.currentSongDetailNotifier,
+              builder: (context, AudioMetaData value, child) {
+                String image = value.image;
+                return Image.asset(
+                  image,
+                  // "assets/images/Farzad-Farzin-Javaher.jpg",
+
+                  fit: BoxFit.cover,
+                );
+              },
             ),
           ),
           BackdropFilter(
@@ -52,7 +68,11 @@ class _MusicScreenState extends State<MusicScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           IconButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              widget._pageController.animateToPage(0,
+                                  duration: const Duration(milliseconds: 500),
+                                  curve: Curves.bounceIn);
+                            },
                             icon: const Icon(
                               Icons.arrow_back,
                               color: Colors.white,
@@ -74,10 +94,18 @@ class _MusicScreenState extends State<MusicScreen> {
                       const SizedBox(
                         height: 50,
                       ),
-                      const CircleAvatar(
-                        radius: 150,
-                        backgroundImage: AssetImage(
-                            'assets/images/Mohsen-Chavoshi-Rahayam-Kon.jpeg'),
+                      ValueListenableBuilder(
+                        valueListenable: _pageManager.currentSongDetailNotifier,
+                        builder: (context, AudioMetaData value, child) {
+                          String imagea = value.image;
+
+                          return CircleAvatar(
+                            radius: 150,
+                            backgroundImage: AssetImage(imagea
+                                // "assets/images/Farzad-Farzin-Javaher.jpg",
+                                ),
+                          );
+                        },
                       ),
                       const SizedBox(
                         height: 20,
@@ -85,26 +113,31 @@ class _MusicScreenState extends State<MusicScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: const [
-                              Text(
-                                "Mohsen Chavoshi",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              //لطفا منتظرباشید
-                              Text(
-                                "Rayaham Kon",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20,
-                                ),
-                              ),
-                            ],
+                          ValueListenableBuilder(
+                            valueListenable:
+                                _pageManager.currentSongDetailNotifier,
+                            builder: (context, AudioMetaData value, child) {
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    value.singerName,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    value.musicName,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
                           ),
                           IconButton(
                             onPressed: () {},

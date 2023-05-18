@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:musicplayer/screen/home_screen.dart';
 import 'package:musicplayer/screen/music_screen.dart';
+import 'package:just_audio/just_audio.dart';
 
 void main() {
-  runApp(const MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(MyApp());
 }
 
+// ignore: must_be_immutable
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  MyApp({super.key});
+  AudioPlayer audioPlayer = AudioPlayer();
+  PageController pageController = PageController(
+    initialPage: 0,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +23,14 @@ class MyApp extends StatelessWidget {
         fontFamily: 'Ubuntu',
       ),
       debugShowCheckedModeBanner: false,
-      home: const MusicScreen(),
+      home: PageView(
+        controller: pageController,
+        scrollDirection: Axis.vertical,
+        children: [
+          HomeScreen(audioPlayer),
+          MusicScreen(audioPlayer, pageController),
+        ],
+      ),
     );
   }
 }
