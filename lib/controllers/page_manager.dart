@@ -152,15 +152,38 @@ class PageManager {
       if (sequenceState == null) {
         return;
       }
+      //update current song
       final currentItem = sequenceState.currentSource;
       final song = currentItem!.tag as AudioMetaData;
       currentSongDetailNotifier.value = song;
+
+      //update play list
       final playList = sequenceState.effectiveSequence;
       final music = playList.map((song) {
         return song.tag as AudioMetaData;
       }).toList();
       playListNotifier.value = music;
+
+
+      //update previous and next music
+      if(playList.isEmpty || currentItem == null){
+       isFirstSongNotifier.value=true;
+       isLastSongNotifier.value=true;
+      }//
+      else{
+       isFirstSongNotifier.value = playList.first==currentItem;
+       isLastSongNotifier.value = playList.last==currentItem;
+      }
     });
+  }
+
+  void onPreviousPressed(){
+    _audioPlayer.seekToPrevious();
+
+  }
+
+  void onNextPressed(){
+    _audioPlayer.seekToNext();
   }
 
   void seek(position) {

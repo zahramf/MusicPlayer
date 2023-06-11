@@ -184,14 +184,17 @@ class _MusicScreenState extends State<MusicScreen> {
                               size: 30,
                             ),
                           ),
-                          IconButton(
-                            onPressed: () {},
-                            icon: const Icon(
-                              Icons.skip_previous,
-                              color: Colors.white,
-                              size: 30,
-                            ),
-                          ),
+                         ValueListenableBuilder(valueListenable: _pageManager.isFirstSongNotifier,
+                             builder: (context,bool value, child) {
+                               return  IconButton(
+                                 onPressed: value?null:_pageManager.onPreviousPressed,
+                                 icon: const Icon(
+                                   Icons.skip_previous,
+                                   color: Colors.white,
+                                   size: 30,
+                                 ),
+                               );
+                             },),
                           Container(
                             padding: const EdgeInsets.all(
                               15,
