@@ -19,7 +19,8 @@ class PageManager {
   final playListNotifier = ValueNotifier<List<AudioMetaData>>([]);
   final isFirstSongNotifier = ValueNotifier<bool>(true);
   final isLastSongNotifier = ValueNotifier<bool>(true);
-  final repeatNotifier = ValueNotifier<RepeatState>(RepeatState.off);
+  final repeatNotifier = RepeatStateNotifier();
+  final volumeNotifier = ValueNotifier<double>(1);
 
   late ConcatenatingAudioSource _playList;
 
@@ -108,6 +109,9 @@ class PageManager {
       else if (!playing) {
         buttonNotifier.value = ButtonState.paused;
       } //
+      else if(processingState == ProcessingState.completed){
+        _audioPlayer.stop();
+      }
       else {
         buttonNotifier.value = ButtonState.playing;
       }
@@ -174,7 +178,28 @@ class PageManager {
        isFirstSongNotifier.value = playList.first==currentItem;
        isLastSongNotifier.value = playList.last==currentItem;
       }
+
+      //update volume
+      if(_audioPlayer.volume !=0){
+        volumeNotifier.value=1;
+      }//
+      else {
+        volumeNotifier.value=0;
+
+      }
+
     });
+  }
+
+  void onVolumePressed(){
+    if(volumeNotifier.value !=0){
+      _audioPlayer.setVolume(0);
+      volumeNotifier.value =0;
+    }//
+    else{
+      _audioPlayer.setVolume(1);
+      volumeNotifier.value =1;
+    }
   }
 
   void onPreviousPressed(){
@@ -184,6 +209,22 @@ class PageManager {
 
   void onNextPressed(){
     _audioPlayer.seekToNext();
+  }
+
+  void onRepeatPressed(){
+    repeatNotifier.nextState();
+    if(repeatNotifier.value == RepeatState.off){
+
+      _audioPlayer.setLoopMode(LoopMode.off);
+    }//
+    else  if(repeatNotifier.value == RepeatState.one){
+
+      _audioPlayer.setLoopMode(LoopMode.one);
+    }//
+    else  if(repeatNotifier.value == RepeatState.all){
+
+      _audioPlayer.setLoopMode(LoopMode.all);
+    }
   }
 
   void seek(position) {
@@ -222,3 +263,15 @@ class ProgressBarState {
 enum ButtonState { playing, paused, loading }
 
 enum RepeatState { one, all, off }
+class RepeatStateNotifier extends ValueNotifier<RepeatState>{
+  RepeatStateNotifier():super(_initialValue);
+
+  static const _initialValue=RepeatState.off;
+
+
+  void nextState(){
+    var next= (value.index +1)% RepeatState.values.length;
+    value=RepeatState.values[next];
+  }
+
+}

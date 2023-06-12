@@ -176,25 +176,57 @@ class _MusicScreenState extends State<MusicScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          IconButton(
-                            onPressed: () {},
-                            icon: const Icon(
-                              Icons.repeat,
-                              color: Colors.white,
-                              size: 30,
-                            ),
+                          ValueListenableBuilder(
+                            valueListenable: _pageManager.repeatNotifier,
+                            builder: (context, value, _) {
+                              switch (value){
+                                case RepeatState.off:
+                                  return  IconButton(
+                                    onPressed:_pageManager.onRepeatPressed,
+                                    icon: const Icon(
+                                      Icons.repeat,
+                                      color: Colors.white,
+                                      size: 30,
+                                    ),
+                                  );
+                                case RepeatState.one:
+                                  return IconButton(
+                                    onPressed:_pageManager.onRepeatPressed,
+                                    icon: const Icon(
+                                      Icons.repeat_one_outlined,
+                                      color: Colors.white,
+                                      size: 30,
+                                    ),
+                                  );
+                                case RepeatState.all:
+                                  return IconButton(
+                                    onPressed: _pageManager.onRepeatPressed,
+                                    icon: const Icon(
+                                      Icons.repeat,
+                                      color: Colors.white,
+                                      size: 30,
+                                    ),
+                                  );
+                              }
+
+
+                            },
                           ),
-                         ValueListenableBuilder(valueListenable: _pageManager.isFirstSongNotifier,
-                             builder: (context,bool value, child) {
-                               return  IconButton(
-                                 onPressed: value?null:_pageManager.onPreviousPressed,
-                                 icon: const Icon(
-                                   Icons.skip_previous,
-                                   color: Colors.white,
-                                   size: 30,
-                                 ),
-                               );
-                             },),
+                          ValueListenableBuilder(
+                            valueListenable: _pageManager.isFirstSongNotifier,
+                            builder: (context, bool value, child) {
+                              return IconButton(
+                                onPressed: value
+                                    ? null
+                                    : _pageManager.onPreviousPressed,
+                                icon: const Icon(
+                                  Icons.skip_previous,
+                                  color: Colors.white,
+                                  size: 30,
+                                ),
+                              );
+                            },
+                          ),
                           Container(
                             padding: const EdgeInsets.all(
                               15,
@@ -242,22 +274,44 @@ class _MusicScreenState extends State<MusicScreen> {
                                   }
                                 }),
                           ),
-                          IconButton(
-                            onPressed: () {},
-                            icon: const Icon(
-                              Icons.skip_next,
-                              color: Colors.white,
-                              size: 30,
-                            ),
+                          ValueListenableBuilder(
+                            valueListenable: _pageManager.isLastSongNotifier,
+                            builder: (context, bool value, child) {
+                              return IconButton(
+                                onPressed:
+                                    value ? null : _pageManager.onNextPressed,
+                                icon: const Icon(
+                                  Icons.skip_next,
+                                  color: Colors.white,
+                                  size: 30,
+                                ),
+                              );
+                            },
                           ),
-                          IconButton(
-                            onPressed: () {},
-                            icon: const Icon(
-                              Icons.volume_up,
-                              color: Colors.white,
-                              size: 30,
-                            ),
-                          ),
+                          ValueListenableBuilder(valueListenable: _pageManager.volumeNotifier, builder: (context, value, child) {
+                           if(value ==0){
+                             return IconButton(
+                               onPressed: _pageManager.onVolumePressed,
+                               icon: const Icon(
+                                 Icons.volume_off,
+                                 color: Colors.white,
+                                 size: 30,
+                               ),
+                             );
+
+                           }//
+                            else{
+                             return IconButton(
+                               onPressed: _pageManager.onVolumePressed,
+                               icon: const Icon(
+                                 Icons.volume_up,
+                                 color: Colors.white,
+                                 size: 30,
+                               ),
+                             );
+
+                           }
+                          },),
                         ],
                       ),
                     ],
