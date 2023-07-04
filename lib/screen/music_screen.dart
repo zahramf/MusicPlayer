@@ -178,7 +178,7 @@ class _MusicScreenState extends State<MusicScreen> {
                         children: [
                           ValueListenableBuilder(
                             valueListenable: _pageManager.repeatNotifier,
-                            builder: (context, value, _) {
+                            builder: (context,RepeatState value, _) {
                               switch (value){
                                 case RepeatState.off:
                                   return  IconButton(

@@ -95,7 +95,9 @@ class PageManager {
         ),
       ],
     );
-    _audioPlayer.setAudioSource(_playList);
+    if(_audioPlayer.bufferedPosition == Duration.zero) {
+      _audioPlayer.setAudioSource(_playList);
+    }
   }
 
   void _listenChangePlayerState() {

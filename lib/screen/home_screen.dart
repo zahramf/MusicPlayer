@@ -4,10 +4,12 @@ import 'package:musicplayer/controllers/page_manager.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen(
-    this._audioPlayer, {
+    this._audioPlayer, this._pageController,{
     super.key,
   });
   final AudioPlayer _audioPlayer;
+  final PageController _pageController;
+
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -62,6 +64,11 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: ListTile(
                               title: Text(value[index].musicName),
                               subtitle: Text(value[index].singerName),
+                              onTap: (){
+                                widget._pageController.animateToPage(1,
+                                    duration: const Duration(milliseconds: 500),
+                                    curve: Curves.bounceIn);
+                              },
                             ),
                           );
                         },
