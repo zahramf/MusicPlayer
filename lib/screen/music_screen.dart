@@ -3,33 +3,23 @@ import 'dart:ui';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:musicplayer/controllers/page_manager.dart';
-import 'package:just_audio/just_audio.dart';
 
 // ignore: must_be_immutable
-class MusicScreen extends StatefulWidget {
-  const MusicScreen(
-    this._audioPlayer,
-    this._pageController, {
+class MusicScreen extends StatelessWidget {
+   MusicScreen(
+
+    this._pageController,
+      this._pageManager,{
     super.key,
   });
 
-  final AudioPlayer _audioPlayer;
   final PageController _pageController;
+  final PageManager _pageManager;
 
-  @override
-  State<MusicScreen> createState() => _MusicScreenState();
-}
 
-class _MusicScreenState extends State<MusicScreen> {
-  late Size size;
 
-  late PageManager _pageManager;
+late Size size;
 
-  @override
-  void initState() {
-    super.initState();
-    _pageManager = PageManager(widget._audioPlayer);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +59,7 @@ class _MusicScreenState extends State<MusicScreen> {
                         children: [
                           IconButton(
                             onPressed: () {
-                              widget._pageController.animateToPage(0,
+                              _pageController.animateToPage(0,
                                   duration: const Duration(milliseconds: 500),
                                   curve: Curves.bounceIn);
                             },
@@ -178,11 +168,11 @@ class _MusicScreenState extends State<MusicScreen> {
                         children: [
                           ValueListenableBuilder(
                             valueListenable: _pageManager.repeatNotifier,
-                            builder: (context,RepeatState value, _) {
-                              switch (value){
+                            builder: (context, RepeatState value, _) {
+                              switch (value) {
                                 case RepeatState.off:
-                                  return  IconButton(
-                                    onPressed:_pageManager.onRepeatPressed,
+                                  return IconButton(
+                                    onPressed: _pageManager.onRepeatPressed,
                                     icon: const Icon(
                                       Icons.repeat,
                                       color: Colors.white,
@@ -191,7 +181,7 @@ class _MusicScreenState extends State<MusicScreen> {
                                   );
                                 case RepeatState.one:
                                   return IconButton(
-                                    onPressed:_pageManager.onRepeatPressed,
+                                    onPressed: _pageManager.onRepeatPressed,
                                     icon: const Icon(
                                       Icons.repeat_one_outlined,
                                       color: Colors.white,
@@ -208,8 +198,6 @@ class _MusicScreenState extends State<MusicScreen> {
                                     ),
                                   );
                               }
-
-
                             },
                           ),
                           ValueListenableBuilder(
@@ -288,30 +276,31 @@ class _MusicScreenState extends State<MusicScreen> {
                               );
                             },
                           ),
-                          ValueListenableBuilder(valueListenable: _pageManager.volumeNotifier, builder: (context, value, child) {
-                           if(value ==0){
-                             return IconButton(
-                               onPressed: _pageManager.onVolumePressed,
-                               icon: const Icon(
-                                 Icons.volume_off,
-                                 color: Colors.white,
-                                 size: 30,
-                               ),
-                             );
-
-                           }//
-                            else{
-                             return IconButton(
-                               onPressed: _pageManager.onVolumePressed,
-                               icon: const Icon(
-                                 Icons.volume_up,
-                                 color: Colors.white,
-                                 size: 30,
-                               ),
-                             );
-
-                           }
-                          },),
+                          ValueListenableBuilder(
+                            valueListenable: _pageManager.volumeNotifier,
+                            builder: (context,double value, child) {
+                              if (value == 0) {
+                                return IconButton(
+                                  onPressed: _pageManager.onVolumePressed,
+                                  icon: const Icon(
+                                    Icons.volume_off,
+                                    color: Colors.white,
+                                    size: 30,
+                                  ),
+                                );
+                              } //
+                              else {
+                                return IconButton(
+                                  onPressed: _pageManager.onVolumePressed,
+                                  icon: const Icon(
+                                    Icons.volume_up,
+                                    color: Colors.white,
+                                    size: 30,
+                                  ),
+                                );
+                              }
+                            },
+                          ),
                         ],
                       ),
                     ],

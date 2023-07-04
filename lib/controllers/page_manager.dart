@@ -67,17 +67,18 @@ class PageManager {
         AudioSource.uri(
           song1,
           tag: AudioMetaData(
-            image: "$prefix/Farzad-Farzin-Javaher.jpg",
-            singerName: 'Farzad Farzin',
-            musicName: 'Javaher',
-          ),
+              image: "$prefix/Mohsen-Chavoshi-Rahayam-Kon.jpeg",
+              singerName: 'Mohsen Chavoshi',
+              musicName: 'Rahayam kon'),
         ),
         AudioSource.uri(
           song2,
           tag: AudioMetaData(
-              image: "$prefix/Mohsen-Chavoshi-Rahayam-Kon.jpeg",
-              singerName: 'Mohsen Chavoshi',
-              musicName: 'Rahayam kon'),
+            image: "$prefix/Farzad-Farzin-Javaher.jpg",
+            singerName: 'Farzad Farzin',
+            musicName: 'Javaher',
+          ),
+
         ),
         AudioSource.uri(
           song3,
@@ -95,7 +96,7 @@ class PageManager {
         ),
       ],
     );
-    if(_audioPlayer.bufferedPosition == Duration.zero) {
+    if (_audioPlayer.bufferedPosition == Duration.zero) {
       _audioPlayer.setAudioSource(_playList);
     }
   }
@@ -111,10 +112,9 @@ class PageManager {
       else if (!playing) {
         buttonNotifier.value = ButtonState.paused;
       } //
-      else if(processingState == ProcessingState.completed){
+      else if (processingState == ProcessingState.completed) {
         _audioPlayer.stop();
-      }
-      else {
+      } else {
         buttonNotifier.value = ButtonState.playing;
       }
     });
@@ -170,67 +170,64 @@ class PageManager {
       }).toList();
       playListNotifier.value = music;
 
-
       //update previous and next music
-      if(playList.isEmpty || currentItem == null){
-       isFirstSongNotifier.value=true;
-       isLastSongNotifier.value=true;
-      }//
-      else{
-       isFirstSongNotifier.value = playList.first==currentItem;
-       isLastSongNotifier.value = playList.last==currentItem;
+      if (playList.isEmpty || currentItem == null) {
+        isFirstSongNotifier.value = true;
+        isLastSongNotifier.value = true;
+      } //
+      else {
+        isFirstSongNotifier.value = playList.first == currentItem;
+        isLastSongNotifier.value = playList.last == currentItem;
       }
 
       //update volume
-      if(_audioPlayer.volume !=0){
-        volumeNotifier.value=1;
-      }//
+      if (_audioPlayer.volume != 0) {
+        volumeNotifier.value = 1;
+      } //
       else {
-        volumeNotifier.value=0;
-
+        volumeNotifier.value = 0;
       }
-
     });
   }
 
-  void onVolumePressed(){
-    if(volumeNotifier.value !=0){
+  void onVolumePressed() {
+    if (volumeNotifier.value != 0) {
       _audioPlayer.setVolume(0);
-      volumeNotifier.value =0;
-    }//
-    else{
+      volumeNotifier.value = 0;
+    } //
+    else {
       _audioPlayer.setVolume(1);
-      volumeNotifier.value =1;
+      volumeNotifier.value = 1;
     }
   }
 
-  void onPreviousPressed(){
+  void onPreviousPressed() {
     _audioPlayer.seekToPrevious();
-
   }
 
-  void onNextPressed(){
+  void onNextPressed() {
     _audioPlayer.seekToNext();
   }
 
-  void onRepeatPressed(){
+  void onRepeatPressed() {
     repeatNotifier.nextState();
-    if(repeatNotifier.value == RepeatState.off){
-
+    if (repeatNotifier.value == RepeatState.off) {
       _audioPlayer.setLoopMode(LoopMode.off);
-    }//
-    else  if(repeatNotifier.value == RepeatState.one){
-
+    } //
+    else if (repeatNotifier.value == RepeatState.one) {
       _audioPlayer.setLoopMode(LoopMode.one);
-    }//
-    else  if(repeatNotifier.value == RepeatState.all){
-
+    } //
+    else if (repeatNotifier.value == RepeatState.all) {
       _audioPlayer.setLoopMode(LoopMode.all);
     }
   }
 
   void seek(position) {
     _audioPlayer.seek(position);
+  }
+
+  void playFromPlayList(int index) {
+    _audioPlayer.seek(Duration.zero, index: index);
   }
 
   void play() {
@@ -265,15 +262,14 @@ class ProgressBarState {
 enum ButtonState { playing, paused, loading }
 
 enum RepeatState { one, all, off }
-class RepeatStateNotifier extends ValueNotifier<RepeatState>{
-  RepeatStateNotifier():super(_initialValue);
 
-  static const _initialValue=RepeatState.off;
+class RepeatStateNotifier extends ValueNotifier<RepeatState> {
+  RepeatStateNotifier() : super(_initialValue);
 
+  static const _initialValue = RepeatState.off;
 
-  void nextState(){
-    var next= (value.index +1)% RepeatState.values.length;
-    value=RepeatState.values[next];
+  void nextState() {
+    var next = (value.index + 1) % RepeatState.values.length;
+    value = RepeatState.values[next];
   }
-
 }

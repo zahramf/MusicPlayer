@@ -1,30 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:musicplayer/controllers/page_manager.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen(
-    this._audioPlayer, this._pageController,{
+// ignore: must_be_immutable
+class HomeScreen extends StatelessWidget {
+  HomeScreen(
+    this._pageController,
+    this._pageManager, {
     super.key,
   });
-  final AudioPlayer _audioPlayer;
   final PageController _pageController;
-
-
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  late PageManager _pageManager;
+  final PageManager _pageManager;
 
   late Size size;
-
-  @override
-  void initState() {
-    super.initState();
-    _pageManager = PageManager(widget._audioPlayer);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,10 +51,11 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: ListTile(
                               title: Text(value[index].musicName),
                               subtitle: Text(value[index].singerName),
-                              onTap: (){
-                                widget._pageController.animateToPage(1,
+                              onTap: () {
+                                _pageController.animateToPage(1,
                                     duration: const Duration(milliseconds: 500),
                                     curve: Curves.bounceIn);
+                                _pageManager.playFromPlayList(index);
                               },
                             ),
                           );
